@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        repos: [wayfire-git]
+        repos: [aur/wayfire-git]
 
       fail-fast: false
       
