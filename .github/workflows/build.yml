@@ -28,7 +28,7 @@ jobs:
         if [ "${{ matrix.repos }}" != "" ] ; then
             name="${{ matrix.repos }}"
         fi
-        name=$(echo -n "${name##*//}")
+        name=$(echo -n "${name##*/}")
         echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
     
     - uses: actions/upload-artifact@v3
