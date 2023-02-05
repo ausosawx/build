@@ -1,0 +1,36 @@
+name: BUILD
+
+on:
+  push:
+  schedule:
+    - cron:  '1 */8 * * *'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        repos: [wayfire-git]
+
+      fail-fast: false
+      
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - uses: ./build-aur-action
+      with:
+        repo-name: ${{ matrix.repos }}
+    
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./*/*.pkg.tar.zst
+        name: ${{ matrix.repos }}
+        if-no-files-found: error
+        
+    - uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        tag: "packages"
+        artifacts: "./*/*.zst"
+        token: ${{ secrets.GITHUB_TOKEN }}
