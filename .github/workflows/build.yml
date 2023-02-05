@@ -21,11 +21,22 @@ jobs:
     - uses: ./build-aur-action
       with:
         repo-name: ${{ matrix.repos }}
+
+    - name: Prepare a unique name for Artifacts
+      id: prep_artifact_name
+      run: |
+        if [ "${{ matrix.repos }}" != "" ] ; then
+            name="${{ matrix.repos }}"
+        fi
+        name=$(echo -n "${name##*//}"
+        # echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
+        env:
+          ARTIFACT_NAME=$name
     
     - uses: actions/upload-artifact@v3
       with:
         path: ./*/*.pkg.tar.zst
-        name: ${{ matrix.repos }}
+        name: ${{ env.ARTIFACT_NAME }}
         if-no-files-found: error
         
     - uses: ncipollo/release-action@v1
