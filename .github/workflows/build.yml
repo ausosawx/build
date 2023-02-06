@@ -2,14 +2,15 @@ name: BUILD
 
 on:
   push:
-  schedule:
-    - cron:  '0 20 * * *'
+  # schedule:
+  #   - cron:  '0 20 * * *'
 
 jobs:
   build:
     strategy:
       matrix:
-        repos: [aur/wayfire-git]
+        repo-name: [aur/wayfire-git]
+        repos: [WayfireWM/wayfire, ausosawx/dotfiles]
 
       fail-fast: false
       
@@ -19,30 +20,36 @@ jobs:
       contents: write
     
     steps:
-    - uses: actions/checkout@v3
-    
-    - uses: ./build-aur-action
-      with:
-        repo-name: ${{ matrix.repos }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Prepare a unique name for Artifacts
-      id: prep_artifact_name
-      run: |
-        if [ "${{ matrix.repos }}" != "" ] ; then
-            name="${{ matrix.repos }}"
-        fi
-        name=$(echo -n "${name##*/}")
-        echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
-    
-    - uses: actions/upload-artifact@v3
-      with:
-        path: ./*/*.pkg.tar.zst
-        name: ${{ env.ARTIFACT_NAME }}
-        if-no-files-found: error
-        
-    - uses: ncipollo/release-action@v1
-      with:
-        allowUpdates: true
-        tag: "packages"
-        artifacts: "./*/*.zst"
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout wayfire repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ matrix.repos }}
+      
+      - uses: ./build-aur-action
+        with:
+          repo-name: ${{ matrix.repo-name }}
+
+      - name: Prepare a unique name for Artifacts
+        id: prep_artifact_name
+        run: |
+          if [ "${{ matrix.repo-name }}" != "" ] ; then
+              name="${{ matrix.repo-name }}"
+          fi
+          name=$(echo -n "${name##*/}")
+          echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./*/*.pkg.tar.zst
+          name: ${{ env.ARTIFACT_NAME }}
+          if-no-files-found: error
+          
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          tag: "packages"
+          artifacts: "./*/*.zst"
+          token: ${{ secrets.GITHUB_TOKEN }}

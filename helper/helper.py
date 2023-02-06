@@ -4,9 +4,8 @@ import os
 import subprocess
 
 import requests
-from requests.compat import urlparse
-
 from conf import *
+from requests.compat import urlparse
 
 
 def get_commander_args():
