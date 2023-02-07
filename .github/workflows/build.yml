@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Check for new commits
         id: check_commits
         run: |
@@ -37,6 +39,13 @@ jobs:
         if: steps.check_commits.outputs.commit_flag == 'true'
         run: |
           echo "new_commit=true" >> $GITHUB_OUTPUT
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "update commit_hash.txt"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.ref }}
 
 # name: BUILD
 # on:
