@@ -2,7 +2,7 @@ name: Monitor Repository
 on:
   push:
   schedule:
-    - cron: "0 * * * *" # Runs every day at midnight
+    - cron: "* * * * *" # Runs every day at midnight
 env:
   REPO: ausosawx/dotfiles
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
