@@ -20,6 +20,8 @@ jobs:
           # Get the latest commit hash on the default branch
           COMMIT_HASH=$(curl -s "${API_URL}/repos/${REPO_OWNER}/${REPO_NAME}/commits/${BRANCH_NAME}" | jq -r '.sha')
 
+          echo ${GITHUB_WORKSPACE}
+
           # Get the latest commit hash on the default branch from the previous run
           PREV_COMMIT_HASH=$(cat ${GITHUB_WORKSPACE}/commit_hash.txt || echo "")
 
