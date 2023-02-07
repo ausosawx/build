@@ -36,8 +36,7 @@ jobs:
       - name: Set Output
         if: steps.check_commits.outputs.commit_flag == 'true'
         run: |
-          echo ::set-output name=new_commit::true
-          echo "true"
+          echo "new_commit=true" >> $GITHUB_TOKEN
 
 # name: BUILD
 # on:
