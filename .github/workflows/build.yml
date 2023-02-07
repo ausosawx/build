@@ -1,35 +1,41 @@
 name: Monitor Repository
 on:
-  push:
   schedule:
-    - cron: '*/1 * * * *' # Runs every day at midnight
-env:
-  REPO: ausosawx/dotfiles
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - cron: '*/2 * * * *'
+  push:
 jobs:
-  monitor_repo:
+  monitor:
     runs-on: ubuntu-latest
     steps:
       - name: Check for new commits
         id: check_commits
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ env.REPO }}
-          token: ${{ env.GITHUB_TOKEN }}
-      - name: Get latest commit
         run: |
-          echo "Fetching latest commit information..."
-          COMMIT=$(git rev-parse HEAD)
-          echo "Latest commit: $COMMIT"
-      - name: Set output
-        if: steps.check_commits.outputs.commit != steps.check_commits.inputs.commit
+          REPO_OWNER=ausosawx
+          REPO_NAME=dotfiles
+          API_URL=https://api.github.com
+
+          # Get the default branch name
+          BRANCH_NAME=$(curl -s "${API_URL}/repos/${REPO_OWNER}/${REPO_NAME}" | jq -r '.default_branch')
+
+          # Get the latest commit hash on the default branch
+          COMMIT_HASH=$(curl -s "${API_URL}/repos/${REPO_OWNER}/${REPO_NAME}/commits/${BRANCH_NAME}" | jq -r '.sha')
+
+          # Get the latest commit hash on the default branch from the previous run
+          PREV_COMMIT_HASH=$(cat ${GITHUB_WORKSPACE}/commit_hash.txt || echo "")
+
+          # If the latest commit hash is different from the previous run, there is a new commit
+          if [ "${COMMIT_HASH}" != "${PREV_COMMIT_HASH}" ]; then
+            echo "true" > ${GITHUB_WORKSPACE}/commit_flag.txt
+          fi
+
+          # Store the latest commit hash for the next run
+          echo "${COMMIT_HASH}" > ${GITHUB_WORKSPACE}/commit_hash.txt
+      - name: Set Output
+        if: steps.check_commits.outputs.commit_flag == 'true'
         run: |
-          echo "::set-output name=new_commit::true"
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-      - name: Return true if new commits
-        if: steps.set_output.outputs.new_commit == 'true'
-        run: echo "true"
+          echo ::set-output name=new_commit::true
+          echo "true"
+
 # name: BUILD
 # on:
 #   push:
