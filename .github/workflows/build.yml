@@ -27,7 +27,8 @@ jobs:
 
           # If the latest commit hash is different from the previous run, there is a new commit
           if [ "${COMMIT_HASH}" != "${PREV_COMMIT_HASH}" ]; then
-            echo "true" > ${GITHUB_WORKSPACE}/commit_flag.txt
+            # echo "true" > ${GITHUB_WORKSPACE}/commit_flag.txt
+            echo "commit_flag=true" >> $GITHUB_OUTPUT
           fi
 
           # Store the latest commit hash for the next run
