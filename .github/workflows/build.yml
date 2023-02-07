@@ -6,14 +6,18 @@ on:
 jobs:
   monitor:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+      repository-projects: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-        # with:
-        #   ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        #   persist-credentials: true
+          # with:
+          #   ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          #   persist-credentials: true
       - name: Check for new commits
         id: check_commits
         run: |
@@ -47,8 +51,6 @@ jobs:
           git add .
           git commit -m "update"
           git push
-
-
         # - run: |
         #     date > generated.txt
         #     git config user.name github-actions
