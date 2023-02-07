@@ -37,8 +37,8 @@ jobs:
         if: steps.check_commits.outputs.commit_flag == 'true'
         run: |
           echo "new_commit=true" >> $GITHUB_OUTPUT
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "ausoso@tuta.io"
+          git config --local user.name "ausosawx"
           git commit -a -m "update commit_hash.txt"
       - name: Push changes
         uses: ad-m/github-push-action@master
