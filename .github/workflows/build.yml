@@ -1,55 +1,71 @@
-name: BUILD
-
+name: Monitor Repository
 on:
   push:
-  # schedule:
-  #   - cron:  '0 20 * * *'
-
+  schedule:
+    - cron: "0 0 * * *" # Runs every day at midnight
+env:
+  REPO: ausosawx/dotfiles
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
-  build:
-    strategy:
-      matrix:
-        repo-name: [aur/wayfire-git]
-        repos: [WayfireWM/wayfire, ausosawx/dotfiles]
-
-      fail-fast: false
-      
+  monitor_repo:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-    
     steps:
-      - name: Checkout wayfire repo
+      - name: Check for new commits
+        id: check_commits
         uses: actions/checkout@v3
         with:
-          repository: ${{ matrix.repos }}
-      
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - uses: ./build-aur-action
-        with:
-          repo-name: ${{ matrix.repo-name }}
-
-      - name: Prepare a unique name for Artifacts
-        id: prep_artifact_name
+          repository: ${{ env.REPO }}
+          token: ${{ env.GITHUB_TOKEN }}
+      - name: Get latest commit
         run: |
-          if [ "${{ matrix.repo-name }}" != "" ] ; then
-              name="${{ matrix.repo-name }}"
-          fi
-          name=$(echo -n "${name##*/}")
-          echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
-      
-      - uses: actions/upload-artifact@v3
-        with:
-          path: ./*/*.pkg.tar.zst
-          name: ${{ env.ARTIFACT_NAME }}
-          if-no-files-found: error
-          
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          tag: "packages"
-          artifacts: "./*/*.zst"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          echo "Fetching latest commit information..."
+          COMMIT=$(git rev-parse HEAD)
+          echo "Latest commit: $COMMIT"
+      - name: Set output
+        if: steps.check_commits.outputs.commit != steps.check_commits.inputs.commit
+        run: |
+          echo "::set-output name=new_commit::true"
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+      - name: Return true if new commits
+        if: steps.set_output.outputs.new_commit == 'true'
+        run: echo "true"
+# name: BUILD
+# on:
+#   push:
+#   # schedule:
+#   #   - cron:  '0 20 * * *'
+# jobs:
+#   build:
+#     strategy:
+#       matrix:
+#         repo-name: [aur/wayfire-git]
+#       fail-fast: false
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+#       - uses: ./build-aur-action
+#         with:
+#           repo-name: ${{ matrix.repo-name }}
+#       - name: Prepare a unique name for Artifacts
+#         id: prep_artifact_name
+#         run: |
+#           if [ "${{ matrix.repo-name }}" != "" ] ; then
+#               name="${{ matrix.repo-name }}"
+#           fi
+#           name=$(echo -n "${name##*/}")
+#           echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
+#       - uses: actions/upload-artifact@v3
+#         with:
+#           path: ./*/*.pkg.tar.zst
+#           name: ${{ env.ARTIFACT_NAME }}
+#           if-no-files-found: error
+#       - uses: ncipollo/release-action@v1
+#         with:
+#           allowUpdates: true
+#           tag: "packages"
+#           artifacts: "./*/*.zst"
+#           token: ${{ secrets.GITHUB_TOKEN }}
