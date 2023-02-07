@@ -21,8 +21,8 @@ jobs:
       - name: Check for new commits
         id: check_commits
         run: |
-          REPO_OWNER=ausosawx
-          REPO_NAME=dotfiles
+          REPO_OWNER=auryouth
+          REPO_NAME=wsl-dot
           API_URL=https://api.github.com
 
           # Get the default branch name
