@@ -9,9 +9,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          persist-credentials: true
+        # with:
+        #   ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        #   persist-credentials: true
       - name: Check for new commits
         id: check_commits
         run: |
@@ -40,14 +40,20 @@ jobs:
         if: steps.check_commits.outputs.commit_flag == 'true'
         run: |
           echo "new_commit=true" >> $GITHUB_OUTPUT
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "update commit_hash.txt"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          ssh: true
-          branch: ${{ github.ref }}
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "update"
+          git push
+
+
+        # - run: |
+        #     date > generated.txt
+        #     git config user.name github-actions
+        #     git config user.email github-actions@github.com
+        #     git add .
+        #     git commit -m "generated"
+        #     git push
 
 # name: BUILD
 # on:
