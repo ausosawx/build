@@ -1,3 +1,4 @@
+
 name: Monitor Repository
 on:
   schedule:
@@ -70,11 +71,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: Split the list of updatable packages
-        run: |
-          updatablePkgs="${{ needs.monitor.outputs.updatablePkgs }}"
-          IFS="," read -ra pkgList <<< "$updatablePkgs"
-          echo "::set-env name=PKG_LIST::${pkgList[*]}"
       - uses: ./build-aur-action
         with:
           repo-name: ${{ matrix.updatablePkgs }}
