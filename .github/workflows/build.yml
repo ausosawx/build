@@ -48,8 +48,9 @@ jobs:
           done
 
           if [ "$flag" == "true" ]; then
-            # echo "updatablePkgs=[${updatablePkgs}]" >>"$GITHUB_OUTPUT"
-            echo "updatablePkgs=${updatablePkgs}" >> "$GITHUB_OUTPUT"
+            updatablePkgs='[${updatablePkgs}]'
+            list=$(echo ${updatablePkgs} | jq -c)
+            echo "updatablePkgs=${list}" >>"$GITHUB_OUTPUT"
             # Save the updated JSON string to a file
             echo "$json" >pkg_info.json
             git config user.name github-actions
@@ -65,9 +66,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        # updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs) }}
-        # updatablePkgs: ${{ needs.monitor.outputs.updatablePkgs }}
-        updatablePkgs: ${{ split(needs.monitor.outputs.updatablePkgs, ",") }}
+        updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs) }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -78,8 +77,7 @@ jobs:
           echo "::set-env name=PKG_LIST::${pkgList[*]}"
       - uses: ./build-aur-action
         with:
-          # repo-name: ${{ matrix.updatablePkgs }}
-          repo-name: "${{ env.PKG_LIST }}"
+          repo-name: ${{ matrix.updatablePkgs }}
       - name: Prepare a unique name for Artifacts
         id: prep_artifact_name
         run: |
