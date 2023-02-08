@@ -57,7 +57,6 @@ jobs:
             git commit -m "update"
             git push
           fi
-
   update:
     needs: monitor
     runs-on: ubuntu-latest
@@ -65,7 +64,8 @@ jobs:
       contents: write
     strategy:
       matrix:
-        updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs) }}
+        # updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs) }}
+        updatablePkgs: ${{ needs.monitor.outputs.updatablePkgs }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
