@@ -3,12 +3,12 @@
     {
       "repo": "WayfireWM/wayfire",
       "pkg": "aur/wayfire",
-      "sha": ""
+      "sha": "06d9cc50f82bf21bfc2c8924d3882149e88e653b"
     },
     {
       "repo": "catchorg/catch2",
       "pkg": "catch2-git",
-      "sha": ""
+      "sha": "cefa8fcf329c950493f80dcbf7e2870a20213e0f"
     },
     {
       "repo": "hyprwm/Hyprland",
