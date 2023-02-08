@@ -1,4 +1,3 @@
-
 name: Monitor Repository
 on:
   schedule:
@@ -49,11 +48,15 @@ jobs:
           done
 
           if [ "$flag" == "true" ]; then
-            updatablePkgs='[${updatablePkgs}]'
-            list=$(echo ${updatablePkgs} | jq -c)
-            echo "updatablePkgs=${list}" >>"$GITHUB_OUTPUT"
+            # updatablePkgs='[${updatablePkgs}]'
+            # list=$(echo ${updatablePkgs} | jq -c)
+            # echo "updatablePkgs=${list}" >>"$GITHUB_OUTPUT"
             # Save the updated JSON string to a file
             echo "$json" >pkg_info.json
+
+            echo '{"updatablePkgs":['
+            echo "${updatablePkgs}" | tr ',' '\n' | sed -e 's/^/"/' -e 's/$/",/'
+            echo ']}'
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
@@ -67,7 +70,8 @@ jobs:
       contents: write
     strategy:
       matrix:
-        updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs) }}
+        updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs).updatablePkgs
+          }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
