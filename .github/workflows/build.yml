@@ -55,6 +55,7 @@ jobs:
             echo "$json" >pkg_info.json
 
             echo "updatablePkgs={"updatablePkgs":[${updatablePkgs}]}" >> $GITHUB_OUTPUT
+            echo "${{ steps.pkg-matrix.outputs.updatablePkgs }}"
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
