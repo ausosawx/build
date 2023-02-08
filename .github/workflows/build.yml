@@ -54,39 +54,39 @@ jobs:
           fi
         # env:
         #   UPDATABLE_PKGS: ${{ steps.pkg-matrix.outputs.UPDATABLE_PKGS }}
-update:
-  needs: monitor
-  runs-on: ubuntu-latest
-  permissions:
-    contents: write
-  strategy:
-    matrix:
-      updatable_pkgs: ${{ fromJson(needs.monitor.outputs.updatable_pkgs) }}
-  steps:
-    - name: checkout
-      uses: actions/checkout@v3
-    - uses: ./build-aur-action
-      with:
-        repo-name: ${{ matrix.updatable_pkgs }}
-    - name: Prepare a unique name for Artifacts
-      id: prep_artifact_name
-      run: |
-        if [ "${{ matrix.repo-name }}" != "" ] ; then
-            name="${{ matrix.repo-name }}"
-        fi
-        name=$(echo -n "${name##*/}")
-        echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
-    - uses: actions/upload-artifact@v3
-      with:
-        path: ./*/*.pkg.tar.zst
-        name: ${{ env.ARTIFACT_NAME }}
-        if-no-files-found: error
-    - uses: ncipollo/release-action@v1
-      with:
-        allowUpdates: true
-        tag: "packages"
-        artifacts: "./*/*.zst"
-        token: ${{ secrets.GITHUB_TOKEN }}
+  update:
+    needs: monitor
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        updatable_pkgs: ${{ fromJson(needs.monitor.outputs.updatable_pkgs) }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: ./build-aur-action
+        with:
+          repo-name: ${{ matrix.updatable_pkgs }}
+      - name: Prepare a unique name for Artifacts
+        id: prep_artifact_name
+        run: |
+          if [ "${{ matrix.repo-name }}" != "" ] ; then
+              name="${{ matrix.repo-name }}"
+          fi
+          name=$(echo -n "${name##*/}")
+          echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./*/*.pkg.tar.zst
+          name: ${{ env.ARTIFACT_NAME }}
+          if-no-files-found: error
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          tag: "packages"
+          artifacts: "./*/*.zst"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
 # name: BUILD
 # on:
