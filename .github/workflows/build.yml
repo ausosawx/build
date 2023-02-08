@@ -20,7 +20,7 @@ jobs:
           json=$(cat pkg_info.json)
           packages=$(echo "$json" | jq '.packages')
           flag="false"
-          updatablePkgs=""
+          outdatedPkgs=""
           for package in $(echo "$packages" | jq -c '.[]'); do
             # Use jq to extract the repo and pkg fields
             repo=$(echo "$package" | jq -r '.repo')
@@ -34,9 +34,9 @@ jobs:
                 flag="true"
               fi
               if [ "$updatablePkgs" = "" ]; then
-                updatablePkgs="${pkg}"
+                outdatedPkgs=${pkg}
               else
-                updatablePkgs="${updatablePkgs},${pkg}"
+                outdatedPkgs=${outdatedPkgsPkgs},${pkg}
               fi
               # Update the sha value in the JSON string
               json=$(echo "$json" | jq --arg repo "$repo" --arg pkg "$pkg" --arg sha "$newSha" '.packages |= map(if (.repo == $repo and .pkg == $pkg) then .sha = $sha else . end)')
@@ -48,8 +48,7 @@ jobs:
             # echo "updatablePkgs=${list}" >>"$GITHUB_OUTPUT"
             # Save the updated JSON string to a file
             echo "$json" >pkg_info.json
-            echo "updatablePkgs=[${updatablePkgs}]" >> $GITHUB_OUTPUT
-            echo "${{ steps.pkg-matrix.outputs.updatablePkgs }}"
+            echo "updatablePkgs=[${outdatedPkgs}]" >> $GITHUB_OUTPUT
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
@@ -63,7 +62,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs) }}
+        updatablePkgs: ${{ fromJSON(needs.monitor.outputs.updatablePkgs) }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
