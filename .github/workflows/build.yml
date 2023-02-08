@@ -7,57 +7,86 @@ jobs:
   monitor:
     runs-on: ubuntu-latest
     permissions:
-      # pull-requests: write
       contents: write
-      # repository-projects: write
+    outputs:
+      updatable_pkgs: ${{ steps.pkg-matrix.outputs.UPDATABLE_PKGS }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        # with:
-        #   token: ${{ secrets.GITHUB_TOKEN }}
-          # with:
-          #   ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          #   persist-credentials: true
-      - name: Check for new commits
-        id: check_commits
+      - name: Check for updatable pkgs
+        id: pkg-matrix
         run: |
-          REPO_OWNER=auryouth
-          REPO_NAME=wsl-dot
           API_URL=https://api.github.com
+          REPO_PKG_SHA=$(jq -r '.packages[]' pkg_info.json)
+          FLAG="false"
+          UPDATABLE_PKGS=""
 
-          # Get the default branch name
-          BRANCH_NAME=$(curl -s "${API_URL}/repos/${REPO_OWNER}/${REPO_NAME}" | jq -r '.default_branch')
+          while read -r item; do
+            REPO=$(jq -r '.repo' <<<"$item")
+            PKG=$(jq -r '.pkg' <<<"$item" | awk -F "/" '{print $NF}')
+            PREV_COMMIT_HASH=$(jq -r '.sha' <<<"$item")
 
-          # Get the latest commit hash on the default branch
-          COMMIT_HASH=$(curl -s "${API_URL}/repos/${REPO_OWNER}/${REPO_NAME}/commits/${BRANCH_NAME}" | jq -r '.sha')
+            # Get the default branch name
+            BRANCH_NAME=$(curl -s "${API_URL}/repos/${REPO}" | jq -r '.default_branch')
 
-          # Get the latest commit hash on the default branch from the previous run
-          PREV_COMMIT_HASH=$(cat ${GITHUB_WORKSPACE}/commit_hash.txt || echo "")
+            # Get the latest commit hash on the default branch
+            COMMIT_HASH=$(curl -s "${API_URL}/repos/${REPO}/commits/${BRANCH_NAME}" | jq -r '.sha')
 
-          # If the latest commit hash is different from the previous run, there is a new commit
-          if [ "${COMMIT_HASH}" != "${PREV_COMMIT_HASH}" ]; then
-            # echo "true" > ${GITHUB_WORKSPACE}/commit_flag.txt
-            echo "commit_flag=true" >> $GITHUB_OUTPUT
+            # If the latest commit hash is different from the previous run, there is a new commit
+            if [ "${COMMIT_HASH}" != "${PREV_COMMIT_HASH}" ]; then
+              if [ "$FLAG" == "false" ]; then
+                FLAG="true"
+              fi
+              UPDATABLE_PKGS="${UPDATABLE_PKGS},${PKG}"
+              # Store the latest commit hash for the next run
+              jq --arg new_hash "${COMMIT_HASH}" '.packages[1].sha = $new_hash' pkg_info.json | sponge pkg_info.json
+            fi
+          done <<<"$REPO_PKG_SHA"
+
+          if [ "$FLAG" == "true" ]; then
+            # UPDATABLE_PKGS="[${UPDATABLE_PKGS}]"
+            echo "UPDATABLE_PKGS=[${UPDATABLE_PKGS}]" >> $GITHUB_OUTPUT
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add .
+            git commit -m "update"
+            git push
           fi
-
-          # Store the latest commit hash for the next run
-          echo "${COMMIT_HASH}" > ${GITHUB_WORKSPACE}/commit_hash.txt
-      - name: Set Output
-        if: steps.check_commits.outputs.commit_flag == 'true'
-        run: |
-          echo "new_commit=true" >> $GITHUB_OUTPUT
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m "update"
-          git push
-        # - run: |
-        #     date > generated.txt
-        #     git config user.name github-actions
-        #     git config user.email github-actions@github.com
-        #     git add .
-        #     git commit -m "generated"
-        #     git push
+        # env:
+        #   UPDATABLE_PKGS: ${{ steps.pkg-matrix.outputs.UPDATABLE_PKGS }}
+update:
+  needs: monitor
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  strategy:
+    matrix:
+      updatable_pkgs: ${{ fromJson(needs.monitor.outputs.updatable_pkgs) }}
+  steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - uses: ./build-aur-action
+      with:
+        repo-name: ${{ matrix.updatable_pkgs }}
+    - name: Prepare a unique name for Artifacts
+      id: prep_artifact_name
+      run: |
+        if [ "${{ matrix.repo-name }}" != "" ] ; then
+            name="${{ matrix.repo-name }}"
+        fi
+        name=$(echo -n "${name##*/}")
+        echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
+    - uses: actions/upload-artifact@v3
+      with:
+        path: ./*/*.pkg.tar.zst
+        name: ${{ env.ARTIFACT_NAME }}
+        if-no-files-found: error
+    - uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        tag: "packages"
+        artifacts: "./*/*.zst"
+        token: ${{ secrets.GITHUB_TOKEN }}
 
 # name: BUILD
 # on:

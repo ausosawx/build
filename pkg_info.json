@@ -1,0 +1,24 @@
+{
+  "packages": [
+    {
+      "repo": "WayfireWM/wayfire",
+      "pkg": "aur/wayfire",
+      "sha": ""
+    },
+    {
+      "repo": "catchorg/catch2",
+      "pkg": "catch2-git",
+      "sha": ""
+    },
+    {
+      "repo": "hyprwm/Hyprland",
+      "package": "hyprland-git",
+      "sha": ""
+    },
+    {
+      "repo": "Alexays/Waybar",
+      "pkg": "waybar-hyprland-git",
+      "sha": ""
+    }
+  ]
+}
