@@ -17,7 +17,7 @@ jobs:
       - name: Check for updatable pkgs
         id: pkg-matrix
         run: |
-          apiUrl=https://api.github.com
+          apiUrl="https://api.github.com"
           json=$(cat pkg_info.json)
           packages=$(echo "$json" | jq '.packages')
           flag="false"
