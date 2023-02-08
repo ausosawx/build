@@ -54,9 +54,7 @@ jobs:
             # Save the updated JSON string to a file
             echo "$json" >pkg_info.json
 
-            echo '{"updatablePkgs":['
-            echo "${updatablePkgs}" | tr ',' '\n' | sed -e 's/^/"/' -e 's/$/",/'
-            echo ']}'
+            echo "updatablePkgs={"updatablePkgs":[${updatablePkgs}]}" >> $GITHUB_OUTPUT
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
