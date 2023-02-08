@@ -12,7 +12,7 @@
     },
     {
       "repo": "hyprwm/Hyprland",
-      "package": "hyprland-git",
+      "pkg": "hyprland-git",
       "sha": ""
     },
     {

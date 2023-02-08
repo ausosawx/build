@@ -9,51 +9,55 @@ jobs:
     permissions:
       contents: write
     outputs:
-      updatable_pkgs: ${{ steps.pkg-matrix.outputs.UPDATABLE_PKGS }}
+      updatablePkgs: ${{ steps.pkg-matrix.outputs.updatablePkgs }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Check for updatable pkgs
         id: pkg-matrix
         run: |
-          API_URL=https://api.github.com
-          REPO_PKG_SHA=$(jq -r '.packages[]' pkg_info.json)
-          FLAG="false"
-          UPDATABLE_PKGS=""
+          apiUrl=https://api.github.com
+          json=$(cat pkg_info.json)
+          packages=$(echo "$json" | jq '.packages')
+          flag="false"
+          updatablePkgs=""
 
-          while read -r item; do
-            REPO=$(jq -r '.repo' <<<"$item")
-            PKG=$(jq -r '.pkg' <<<"$item" | awk -F "/" '{print $NF}')
-            PREV_COMMIT_HASH=$(jq -r '.sha' <<<"$item")
+          for package in $(echo "$packages" | jq -c '.[]'); do
+            # Use jq to extract the repo and pkg fields
+            repo=$(echo "$package" | jq -r '.repo')
+            pkg=$(echo "$package" | jq -r '.pkg')
+            oldSha=$(echo "$package" | jq -r '.sha')
 
-            # Get the default branch name
-            BRANCH_NAME=$(curl -s "${API_URL}/repos/${REPO}" | jq -r '.default_branch')
+            branchName=$(curl -s "${apiUrl}/repos/${repo}" | jq -r '.default_branch')
 
             # Get the latest commit hash on the default branch
-            COMMIT_HASH=$(curl -s "${API_URL}/repos/${REPO}/commits/${BRANCH_NAME}" | jq -r '.sha')
+            newSha=$(curl -s "${apiUrl}/repos/${repo}/commits/${branchName}" | jq -r '.sha')
 
-            # If the latest commit hash is different from the previous run, there is a new commit
-            if [ "${COMMIT_HASH}" != "${PREV_COMMIT_HASH}" ]; then
-              if [ "$FLAG" == "false" ]; then
-                FLAG="true"
+            if [ "${newSha}" != "${oldSha}" ]; then
+              if [ "$flag" == "false" ]; then
+                flag="true"
               fi
-              UPDATABLE_PKGS="${UPDATABLE_PKGS},${PKG}"
-              # Store the latest commit hash for the next run
-              jq --arg new_hash "${COMMIT_HASH}" '.packages[1].sha = $new_hash' pkg_info.json | sponge pkg_info.json
+              if [ "$updatablePkgs" = "" ]; then
+                updatablePkgs="${pkg}"
+              else
+                updatablePkgs="${updatablePkgs},${pkg}"
+              fi
+              # Update the sha value in the JSON string
+              json=$(echo "$json" | jq --arg repo "$repo" --arg pkg "$pkg" --arg sha "$newSha" '.packages |= map(if (.repo == $repo and .pkg == $pkg) then .sha = $sha else . end)')
             fi
-          done <<<"$REPO_PKG_SHA"
+          done
 
-          if [ "$FLAG" == "true" ]; then
-            # UPDATABLE_PKGS="[${UPDATABLE_PKGS}]"
-            echo "UPDATABLE_PKGS=[${UPDATABLE_PKGS}]" >> $GITHUB_OUTPUT
+          if [ "$flag" == "true" ]; then
+            echo "updatablePkgs=[${updatablePkgs}]" >>"$GITHUB_OUTPUT"
+            # Save the updated JSON string to a file
+            echo "$json" >pkg_info.json
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
             git commit -m "update"
             git push
           fi
-        # env:
-        #   UPDATABLE_PKGS: ${{ steps.pkg-matrix.outputs.UPDATABLE_PKGS }}
+
   update:
     needs: monitor
     runs-on: ubuntu-latest
@@ -61,18 +65,18 @@ jobs:
       contents: write
     strategy:
       matrix:
-        updatable_pkgs: ${{ fromJson(needs.monitor.outputs.updatable_pkgs) }}
+        updatablePkgs: ${{ fromJson(needs.monitor.outputs.updatablePkgs) }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
       - uses: ./build-aur-action
         with:
-          repo-name: ${{ matrix.updatable_pkgs }}
+          repo-name: ${{ matrix.updatablePkgs }}
       - name: Prepare a unique name for Artifacts
         id: prep_artifact_name
         run: |
-          if [ "${{ matrix.repo-name }}" != "" ] ; then
-              name="${{ matrix.repo-name }}"
+          if [ "${{ matrix.updatablePkgs }}" != "" ] ; then
+              name="${{ matrix.updatablePkgs }}"
           fi
           name=$(echo -n "${name##*/}")
           echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
