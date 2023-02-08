@@ -98,7 +98,7 @@ jobs:
   build:
     strategy:
       matrix:
-        repo-name: [aur/wayfire-git, hyprland-git]
+        repos: [aur/wayfire-git, hyprland-git]
       fail-fast: false
     runs-on: ubuntu-latest
     permissions:
@@ -108,12 +108,12 @@ jobs:
         uses: actions/checkout@v3
       - uses: ./build-aur-action
         with:
-          repo-name: ${{ matrix.repo-name }}
+          repo-name: ${{ matrix.repos }}
       - name: Prepare a unique name for Artifacts
         id: prep_artifact_name
         run: |
-          if [ "${{ matrix.repo-name }}" != "" ] ; then
-              name="${{ matrix.repo-name }}"
+          if [ "${{ matrix.repos }}" != "" ] ; then
+              name="${{ matrix.repos }}"
           fi
           name=$(echo -n "${name##*/}")
           echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
