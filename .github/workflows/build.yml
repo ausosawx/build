@@ -1,119 +1,79 @@
-name: Monitor Repository
-on:
-  schedule:
-    - cron: '*/2 * * * *'
-  push:
-jobs:
-  monitor:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      updatablePkgs: ${{ steps.pkg-matrix.outputs.updatablePkgs }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Check for updatable pkgs
-        id: pkg-matrix
-        run: |
-          apiUrl="https://api.github.com"
-          json=$(cat pkg_info.json)
-          packages=$(echo "$json" | jq '.packages')
-          flag="false"
-          outdatedPkgs=""
-          for package in $(echo "$packages" | jq -c '.[]'); do
-            # Use jq to extract the repo and pkg fields
-            repo=$(echo "$package" | jq -r '.repo')
-            pkg=$(echo "$package" | jq -r '.pkg')
-            oldSha=$(echo "$package" | jq -r '.sha')
-            branchName=$(curl -s "${apiUrl}/repos/${repo}" | jq -r '.default_branch')
-            # Get the latest commit hash on the default branch
-            newSha=$(curl -s "${apiUrl}/repos/${repo}/commits/${branchName}" | jq -r '.sha')
-            if [ "${newSha}" != "${oldSha}" ]; then
-              if [ "$flag" == "false" ]; then
-                flag="true"
-              fi
-              if [ "$updatablePkgs" = "" ]; then
-                outdatedPkgs=${pkg}
-              else
-                outdatedPkgs=${outdatedPkgsPkgs},${pkg}
-              fi
-              # Update the sha value in the JSON string
-              json=$(echo "$json" | jq --arg repo "$repo" --arg pkg "$pkg" --arg sha "$newSha" '.packages |= map(if (.repo == $repo and .pkg == $pkg) then .sha = $sha else . end)')
-            fi
-          done
-          if [ "$flag" == "true" ]; then
-            # updatablePkgs='[${updatablePkgs}]'
-            # list=$(echo ${updatablePkgs} | jq -c)
-            # echo "updatablePkgs=${list}" >>"$GITHUB_OUTPUT"
-            # Save the updated JSON string to a file
-            echo "$json" >pkg_info.json
-            echo "updatablePkgs=[${outdatedPkgs}]" >> $GITHUB_OUTPUT
-            git config user.name github-actions
-            git config user.email github-actions@github.com
-            git add .
-            git commit -m "update"
-            git push
-          fi
-  update:
-    needs: monitor
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    strategy:
-      matrix:
-        updatablePkgs: ${{ fromJSON(needs.monitor.outputs.updatablePkgs) }}
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - uses: ./build-aur-action
-        with:
-          repo-name: ${{ matrix.updatablePkgs }}
-      - name: Prepare a unique name for Artifacts
-        id: prep_artifact_name
-        run: |
-          if [ "${{ matrix.updatablePkgs }}" != "" ] ; then
-              name="${{ matrix.updatablePkgs }}"
-          fi
-          name=$(echo -n "${name##*/}")
-          echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v3
-        with:
-          path: ./*/*.pkg.tar.zst
-          name: ${{ env.ARTIFACT_NAME }}
-          if-no-files-found: error
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          tag: "packages"
-          artifacts: "./*/*.zst"
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-# name: BUILD
+# name: Monitor Repository
 # on:
+#   schedule:
+#     - cron: '*/2 * * * *'
 #   push:
-#   # schedule:
-#   #   - cron:  '0 20 * * *'
 # jobs:
-#   build:
-#     strategy:
-#       matrix:
-#         repo-name: [aur/wayfire-git]
-#       fail-fast: false
+#   monitor:
 #     runs-on: ubuntu-latest
 #     permissions:
 #       contents: write
+#     outputs:
+#       updatablePkgs: ${{ steps.pkg-matrix.outputs.updatablePkgs }}
 #     steps:
 #       - name: Checkout repository
 #         uses: actions/checkout@v3
+#       - name: Check for updatable pkgs
+#         id: pkg-matrix
+#         run: |
+#           apiUrl="https://api.github.com"
+#           json=$(cat pkg_info.json)
+#           packages=$(echo "$json" | jq '.packages')
+#           flag="false"
+#           outdatedPkgs=""
+#           for package in $(echo "$packages" | jq -c '.[]'); do
+#             # Use jq to extract the repo and pkg fields
+#             repo=$(echo "$package" | jq -r '.repo')
+#             pkg=$(echo "$package" | jq -r '.pkg')
+#             oldSha=$(echo "$package" | jq -r '.sha')
+#             branchName=$(curl -s "${apiUrl}/repos/${repo}" | jq -r '.default_branch')
+#             # Get the latest commit hash on the default branch
+#             newSha=$(curl -s "${apiUrl}/repos/${repo}/commits/${branchName}" | jq -r '.sha')
+#             if [ "${newSha}" != "${oldSha}" ]; then
+#               if [ "$flag" == "false" ]; then
+#                 flag="true"
+#               fi
+#               if [ "$updatablePkgs" = "" ]; then
+#                 outdatedPkgs=${pkg}
+#               else
+#                 outdatedPkgs=${outdatedPkgsPkgs},${pkg}
+#               fi
+#               # Update the sha value in the JSON string
+#               json=$(echo "$json" | jq --arg repo "$repo" --arg pkg "$pkg" --arg sha "$newSha" '.packages |= map(if (.repo == $repo and .pkg == $pkg) then .sha = $sha else . end)')
+#             fi
+#           done
+#           if [ "$flag" == "true" ]; then
+#             # updatablePkgs='[${updatablePkgs}]'
+#             # list=$(echo ${updatablePkgs} | jq -c)
+#             # echo "updatablePkgs=${list}" >>"$GITHUB_OUTPUT"
+#             # Save the updated JSON string to a file
+#             echo "$json" >pkg_info.json
+#             echo "updatablePkgs=[${outdatedPkgs}]" >> $GITHUB_OUTPUT
+#             git config user.name github-actions
+#             git config user.email github-actions@github.com
+#             git add .
+#             git commit -m "update"
+#             git push
+#           fi
+#   update:
+#     needs: monitor
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#     strategy:
+#       matrix:
+#         updatablePkgs: ${{ fromJSON(needs.monitor.outputs.updatablePkgs) }}
+#     steps:
+#       - name: checkout
+#         uses: actions/checkout@v3
 #       - uses: ./build-aur-action
 #         with:
-#           repo-name: ${{ matrix.repo-name }}
+#           repo-name: ${{ matrix.updatablePkgs }}
 #       - name: Prepare a unique name for Artifacts
 #         id: prep_artifact_name
 #         run: |
-#           if [ "${{ matrix.repo-name }}" != "" ] ; then
-#               name="${{ matrix.repo-name }}"
+#           if [ "${{ matrix.updatablePkgs }}" != "" ] ; then
+#               name="${{ matrix.updatablePkgs }}"
 #           fi
 #           name=$(echo -n "${name##*/}")
 #           echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
@@ -128,3 +88,43 @@ jobs:
 #           tag: "packages"
 #           artifacts: "./*/*.zst"
 #           token: ${{ secrets.GITHUB_TOKEN }}
+
+name: BUILD
+on:
+  push:
+  # schedule:
+  #   - cron:  '0 20 * * *'
+jobs:
+  build:
+    strategy:
+      matrix:
+        repo-name: [aur/wayfire-git, hyprland-git]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - uses: ./build-aur-action
+        with:
+          repo-name: ${{ matrix.repo-name }}
+      - name: Prepare a unique name for Artifacts
+        id: prep_artifact_name
+        run: |
+          if [ "${{ matrix.repo-name }}" != "" ] ; then
+              name="${{ matrix.repo-name }}"
+          fi
+          name=$(echo -n "${name##*/}")
+          echo "ARTIFACT_NAME=$name" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./*/*.pkg.tar.zst
+          name: ${{ env.ARTIFACT_NAME }}
+          if-no-files-found: error
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          tag: "packages"
+          artifacts: "./*/*.zst"
+          token: ${{ secrets.GITHUB_TOKEN }}
