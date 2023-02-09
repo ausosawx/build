@@ -109,7 +109,7 @@ jobs:
           echo $matrix | jq .
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
     outputs:
-      pkg_matrix: ${{steps.set-matrix.outputs.matrix}}
+      pkg-matrix: ${{steps.set-matrix.outputs.matrix}}
   check-matrix:
     runs-on: ubuntu-latest
     needs: build-matrix
@@ -119,7 +119,7 @@ jobs:
           sudo npm install -g json2yaml
       - name: Check matrix definition
         run: |
-          matrix='${{ needs.matrix.outputs.matrix }}'
+          matrix='${{ needs.build-matrix.outputs.pkg-matrix }}'
           echo $matrix
           echo $matrix | jq .
           echo $matrix | json2yaml
@@ -128,7 +128,7 @@ jobs:
     strategy:
       matrix:
         # repos: [aur/wayfire-git, hyprland-git]
-        repos: ${{fromJSON(needs.build-matrix.outputs.matrix)}}
+        repos: ${{fromJSON(needs.build-matrix.outputs.pkg-matrix)}}
       fail-fast: false
     runs-on: ubuntu-latest
     permissions:
