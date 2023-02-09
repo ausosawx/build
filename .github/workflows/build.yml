@@ -124,13 +124,13 @@ jobs:
           echo $matrix | jq .
           echo $matrix | json2yaml
   build:
+    runs-on: ubuntu-latest
     needs: build-matrix
     strategy:
       matrix:
         # repos: [aur/wayfire-git, hyprland-git]
-        repos: ${{fromJSON(needs.build-matrix.outputs.pkg-matrix)}}
+        repos: ${{ fromJson(needs.build-matrix.outputs.pkg-matrix) }}
       fail-fast: false
-    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
