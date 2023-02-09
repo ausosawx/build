@@ -2,8 +2,6 @@
 name: Monitor outdated pkgs.Update and release
 on:
   push:
-  schedule:
-    - cron: '*/2 * * * *'
 jobs:
   monitor:
     runs-on: ubuntu-latest
