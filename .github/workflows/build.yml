@@ -127,9 +127,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-matrix
     strategy:
-      matrix:
-        # repos: [aur/wayfire-git, hyprland-git]
-        repos: ${{ fromJson(needs.build-matrix.outputs.pkg-matrix) }}
+      matrix: ${{ fromJson(needs.build-matrix.outputs.pkg-matrix) }}
+      # repos: [aur/wayfire-git, hyprland-git]
       fail-fast: false
     permissions:
       contents: write
