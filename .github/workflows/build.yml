@@ -64,7 +64,7 @@ jobs:
       flag: ${{ steps.monitor.outputs.flag }}
   update:
     needs: monitor
-    if: needs.monitor.outputs.flag == "true"
+    if: ${{ needs.monitor.outputs.flag }} == "true"
     runs-on: ubuntu-latest
     permissions:
       contents: write
