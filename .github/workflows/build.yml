@@ -101,7 +101,7 @@ jobs:
       - id: set-matrix
         run: |
           matrix=$((
-            echo '{ "packages" : ['
+            echo '{ "repos" : ['
             jq -c '.packages[].repo' pkg_info.json | paste -sd,
             echo " ]}"
           ) | jq -c .)
