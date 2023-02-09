@@ -95,10 +95,20 @@ on:
   # schedule:
   #   - cron:  '0 20 * * *'
 jobs:
+  build-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - id: set-matrix
+        run: echo "pkg_matrix=$(cat pkg_info.json | jq -c '[.packages[].pkg]') >>
+          $GITHUB_OUTPUT
+    outputs:
+      pkg_matrix: ${{steps.set-matrix.outputs.pkg_matrix}}
   build:
+    needs: build-matrix
     strategy:
       matrix:
-        repos: [aur/wayfire-git, hyprland-git]
+        # repos: [aur/wayfire-git, hyprland-git]
+        repos: ${{fromJSON(needs.build-matrix.outputs.pkg_matrix)}}
       fail-fast: false
     runs-on: ubuntu-latest
     permissions:
