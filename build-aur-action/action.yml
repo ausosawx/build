@@ -1,11 +1,13 @@
 name: 'Build AUR Package'
+description: 'Build an ArchLinux package in Docker container'
 branding:
   icon: user-check
   color: gray-dark
 inputs:
-  repo-name:
-    description: 'AUR repository name to build'
+  pkg-name:
+    description: 'ArchLinux package name to build'
     required: true
+    default: ""
   preinstallPkgs:
     description: 'packages need install before build, separated by space'
     required: false
@@ -14,4 +16,4 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.repo-name }}
+    - ${{ inputs.pkg-name }}
