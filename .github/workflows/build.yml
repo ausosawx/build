@@ -1,3 +1,4 @@
+
 name: Monitor outdated pkgs.Update and release
 on:
   push:
@@ -35,7 +36,7 @@ jobs:
               if [ "$outdated_pkgs" = "" ]; then
                 outdated_pkgs=\"$pkg\"
               else
-                outdated_pkgs=\"$outdated_pkgs\",\"$pkg\"
+                outdated_pkgs=$outdated_pkgs,\"$pkg\"
               fi
               # Update the sha value in the JSON string
               json=$(echo "$json" | jq --arg repo "$repo" --arg pkg "$pkg" --arg sha "$new_sha" '.packages |= map(if (.repo == $repo and .pkg == $pkg) then .sha = $sha else . end)')
