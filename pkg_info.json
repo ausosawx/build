@@ -1,0 +1,24 @@
+{
+  "packages": [
+    {
+      "repo": "WayfireWM/wayfire",
+      "pkg": "wayfire-git",
+      "sha": "f71525094487884719687c817a8cfd90a6fddb75"
+    },
+    {
+      "repo": "catchorg/catch2",
+      "pkg": "catch2-git",
+      "sha": "76cdaa3b51274a748dd971313c8692c3ce967477"
+    },
+    {
+      "repo": "hyprwm/Hyprland",
+      "pkg": "hyprland-git",
+      "sha": "d1a7f1dd368517854fdcc12a9bdd189578eef435"
+    },
+    {
+      "repo": "Alexays/Waybar",
+      "pkg": "waybar-hyprland-git",
+      "sha": "ea38eec2afd249481df737cc38e055974f83967c"
+    }
+  ]
+}

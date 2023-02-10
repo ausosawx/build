@@ -1,0 +1,123 @@
+name: Del workflow runs->Monitor outdated pkgs->Update and release
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6,17 * * *'
+jobs:
+  del_runs:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 10
+          keep_minimum_runs: 6
+  monitor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Check for outdated pkgs
+        id: pkg-matrix
+        run: |
+          json=$(cat pkg_info.json)
+          packages=$(echo "$json" | jq '.packages')
+          flag="false"
+          outdated_pkgs=""
+
+          for package in $(echo "$packages" | jq -c '.[]'); do
+            # Use jq to extract the repo,pkg,sha fields
+            repo=$(echo "$package" | jq -r '.repo')
+            pkg=$(echo "$package" | jq -r '.pkg')
+            old_sha=$(echo "$package" | jq -r '.sha')
+
+            # Get the latest commit hash on the default branch
+            default_branch=$(curl -s "${{ github.api_url }}/repos/$repo" | jq -r '.default_branch')
+            new_sha=$(curl -s "${{ github.api_url }}/repos/$repo/commits/$default_branch" | jq -r '.sha')
+
+            if [ "$new_sha" != "$old_sha" ]; then
+              if [ "$flag" == "false" ]; then
+                flag="true"
+              fi
+              if [ "$outdated_pkgs" = "" ]; then
+                outdated_pkgs=\"$pkg\"
+              else
+                outdated_pkgs=$outdated_pkgs,\"$pkg\"
+              fi
+              # Update the sha value in the JSON string
+              json=$(echo "$json" | jq --arg repo "$repo" --arg pkg "$pkg" --arg sha "$new_sha" '.packages |= map(if (.repo == $repo and .pkg == $pkg) then .sha = $sha else . end)')
+            fi
+          done
+
+          # define the updatable_pkgs output
+          updatable_pkgs=$((
+            echo '{ "pkgs" : ['
+            echo $outdated_pkgs
+            echo " ]}"
+          ) | jq -c .)
+
+          echo "updatable_pkgs=$updatable_pkgs" >> $GITHUB_OUTPUT
+          echo "flag=$flag" >>$GITHUB_OUTPUT
+
+          if [ "$flag" == "true" ]; then
+            # Save the updated JSON string to a file
+            echo "$json" >pkg_info.json
+            # git push
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add .
+            git commit -m "update"
+            git push
+          fi
+    outputs:
+      updatable_pkgs: ${{ steps.pkg-matrix.outputs.updatable_pkgs }}
+      flag: ${{ steps.pkg-matrix.outputs.flag }}
+  update:
+    needs: monitor
+    if: needs.monitor.outputs.flag == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix: ${{ fromJSON(needs.monitor.outputs.updatable_pkgs) }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Delete old release assets
+        uses: mknejp/delete-release-assets@v1
+        with:
+          token: ${{ github.token }}
+          tag: packages
+          fail-if-no-assets: false
+          assets: ${{ matrix.pkgs }}-*.pkg.tar.zst
+      - uses: ./build-aur-action
+        with:
+          pkg-name: ${{ matrix.pkgs }}
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./*/*.pkg.tar.zst
+          name: ${{ matrix.pkgs }}
+          if-no-files-found: error
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          tag: packages
+          omitNameDuringUpdate: true
+          artifacts: ./*/*.zst
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Send notify to telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: "From ${{ github.repository }} - ${{ github.workflow }}: \n    Package
+            ${{ matrix.pkgs }} build success!\n[View it On Github](${{ github.server_url
+            }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n"
