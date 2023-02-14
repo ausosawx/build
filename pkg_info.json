@@ -3,7 +3,7 @@
     {
       "repo": "WayfireWM/wayfire",
       "pkg": "wayfire-git",
-      "sha": "f71525094487884719687c817a8cfd90a6fddb75"
+      "sha": "a1f575701ab3ba41006a38c0a01f39d31fdf2dbb"
     },
     {
       "repo": "catchorg/catch2",
@@ -13,7 +13,7 @@
     {
       "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
-      "sha": "98c95aa34d31bcbb792227d00dc37bfd627a564a"
+      "sha": "fdc847706a005dfaa204ad0cde0953abce3244bd"
     },
     {
       "repo": "Alexays/Waybar",
