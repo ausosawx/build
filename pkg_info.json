@@ -22,7 +22,7 @@
     },
     {
       "repo": "fcitx/mozc",
-      "pkg": "fcitx5-mozc-ut-full",
+      "pkg": "fcitx5-mozc-ut",
       "sha": ""
     }
   ]
