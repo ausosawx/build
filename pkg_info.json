@@ -24,6 +24,11 @@
       "repo": "fcitx/mozc",
       "pkg": "fcitx5-mozc-ut",
       "sha": "ccb0bd8f210465b348c5e6ac3d0610f0890af2c6"
+    },
+    {
+      "repo": "google/mozc",
+      "pkg": "mozc",
+      "sha": ""
     }
   ]
 }
