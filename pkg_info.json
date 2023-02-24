@@ -19,6 +19,11 @@
       "repo": "Alexays/Waybar",
       "pkg": "waybar-hyprland-git",
       "sha": "ea38eec2afd249481df737cc38e055974f83967c"
+    },
+    {
+      "repo": "fcitx/mozc",
+      "pkg": "fcitx5-mozc-ut",
+      "sha": ""
     }
   ]
 }
