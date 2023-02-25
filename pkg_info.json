@@ -3,7 +3,7 @@
     {
       "repo": "WayfireWM/wayfire",
       "pkg": "wayfire-git",
-      "sha": "a1f575701ab3ba41006a38c0a01f39d31fdf2dbb"
+      "sha": "341dca291516d4f9a94211d24641a7eed16a0f0d"
     },
     {
       "repo": "catchorg/catch2",
@@ -18,7 +18,7 @@
     {
       "repo": "Alexays/Waybar",
       "pkg": "waybar-hyprland-git",
-      "sha": "ea38eec2afd249481df737cc38e055974f83967c"
+      "sha": "09142fa322e080474de0f2dc3ea98036846550df"
     },
     {
       "repo": "fcitx/mozc",
