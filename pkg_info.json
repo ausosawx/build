@@ -8,12 +8,12 @@
     {
       "repo": "catchorg/catch2",
       "pkg": "catch2-git",
-      "sha": "9ff3cde87b1d8c61d2d97c34bdc71f0ec0a34a9c"
+      "sha": "6fbb3f07235311d0c228b17b52406343a7aed8f2"
     },
     {
       "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
-      "sha": "1089e858b49975a4b9f6e49d377726ee4f164f96"
+      "sha": "e3027248470dab4553273368de85d0f4cf357f78"
     },
     {
       "repo": "Alexays/Waybar",
