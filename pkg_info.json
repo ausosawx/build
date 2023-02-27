@@ -13,7 +13,7 @@
     {
       "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
-      "sha": "18ed73f091204e44304192bd90c21fe5463ab46d"
+      "sha": "74a10f26a469de54968e584525f6507928f615f0"
     },
     {
       "repo": "Alexays/Waybar",
@@ -23,12 +23,12 @@
     {
       "repo": "fcitx/mozc",
       "pkg": "fcitx5-mozc-ut",
-      "sha": "ccb0bd8f210465b348c5e6ac3d0610f0890af2c6"
+      "sha": "34f5c883fa2d4961fe1ea6e231d4785124941ab6"
     },
     {
       "repo": "google/mozc",
       "pkg": "mozc",
-      "sha": "b4baf700ffa64265bbd56297dc85c6e397eb37ee"
+      "sha": "9488c49760d13cf615548ec8b6015f91c59dbb0f"
     }
   ]
 }
