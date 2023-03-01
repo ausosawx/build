@@ -18,4 +18,9 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 	pacman -Syu --noconfirm "$INPUT_PREINSTALLPKGS"
 fi
 
-sudo --set-home -u builder paru -Sa --noconfirm --clonedir=./ "$pkgname"
+if [ -d "../$pkgname" ]; then
+	cd ../"$pkgname" || exit
+	sudo --set-home -u builder paru -U --noconfirm
+else
+	sudo --set-home -u builder paru -Sa --noconfirm --clonedir=./ "$pkgname"
+fi
