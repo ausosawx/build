@@ -18,9 +18,8 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 	pacman -Syu --noconfirm "$INPUT_PREINSTALLPKGS"
 fi
 
-pkgbuild_dir=../$pkgname
-if ! [ -d "$pkgbuild_dir" ]; then
-	cd "$pkgbuild_dir" || exit
+if ! [ -d "$pkgname" ]; then
+	cd "$pkgname" || exit
 	chown -R builder .
 	sudo --set-home -u builder paru -U --noconfirm
 else
