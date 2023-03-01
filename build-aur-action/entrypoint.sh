@@ -19,7 +19,7 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 fi
 
 pkgbuild_dir=../$pkgname
-if [ -d "$pkgbuild_dir" ]; then
+if ! [ -d "$pkgbuild_dir" ]; then
 	cd "$pkgbuild_dir" || exit
 	chown -R builder .
 	sudo --set-home -u builder paru -U --noconfirm
