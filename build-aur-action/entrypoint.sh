@@ -20,6 +20,9 @@ fi
 
 pkgbuild_dir=../pkgname
 if [ -d $pkgbuild_dir ]; then
+	# fix directory permissions
+	sudo chown -R builder "$pkgbuild_dir"
+	sudo chown -R builder /github/home
 	install_deps() {
 		# install the package dependencies
 		grep -E 'depends' .SRCINFO |
