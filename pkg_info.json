@@ -29,12 +29,6 @@
       "pkg": "fcitx5-mozc-ut",
       "sha": "",
       "version": ""
-    },
-    {
-      "repo": "google/mozc",
-      "pkg": "mozc",
-      "sha": "",
-      "version": ""
     }
   ]
 }
