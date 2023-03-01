@@ -23,18 +23,6 @@
       "pkg": "waybar-hyprland-git",
       "sha": "",
       "version": "0.9.17.r69.g09142fa3-1"
-    },
-    {
-      "repo": "fcitx/mozc",
-      "pkg": "fcitx5-mozc-ut",
-      "sha": "",
-      "version": ""
-    },
-    {
-      "repo": "google/mozc",
-      "pkg": "mozc-ut",
-      "sha": "",
-      "version": ""
     }
   ]
 }
