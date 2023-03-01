@@ -18,9 +18,9 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 	pacman -Syu --noconfirm "$INPUT_PREINSTALLPKGS"
 fi
 
-pkgbuild_dir=../pkgname
-if [ -d $pkgbuild_dir ]; then
-	cd $pkgbuild_dir || exit
+pkgbuild_dir=../$pkgname
+if [ -d "$pkgbuild_dir" ]; then
+	cd "$pkgbuild_dir" || exit
 	chown -R builder .
 	# fix directory permissions
 	install_deps() {
