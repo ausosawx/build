@@ -18,7 +18,7 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 	pacman -Syu --noconfirm "$INPUT_PREINSTALLPKGS"
 fi
 
-if ! [ -d "$pkgname" ]; then
+if [ -d "$pkgname" ]; then
 	echo '::warning:: This is a warning message, to demonstrate that commands are being processed.'
 	cd "$pkgname" || exit
 	chown -R builder .
