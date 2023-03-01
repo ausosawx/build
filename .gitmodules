@@ -1,0 +1,3 @@
+[submodule "hyprland-git"]
+	path = hyprland-git
+	url = https://aur.archlinux.org/hyprland-git.git

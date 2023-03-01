@@ -2,7 +2,6 @@
 
 cd "$(dirname "$0")" || exit 1
 
-
 # Check d-bus for notify-send
 userid=$(id -u)
 DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$userid/bus"
@@ -59,8 +58,12 @@ fi
 # Extract remote_release info and update
 assets_names=$(echo "$remote_releases" | jq -cr '.[0].assets[] | .name')
 flag="true"
-for pkg in $(jq -cr '.packages[].pkg' pkg_info.json); do
-	local_version=$(paru -Qi "$pkg" | grep "^Version" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+json=$(cat pkg_info.json)
+packages=$(echo "$json" | jq '.packages')
+for package in $(echo "$packages" | jq -c '.[]'); do
+	# local_version=$(paru -Qi "$pkg" | grep "^Version" | awk -F: '{print $2}' | sed 's/^[ \t]*//;s/[ \t]*$//')
+	pkg=$(echo "$package" | jq -r '.pkg')
+	local_version=$(echo "$package" | jq -r '.version')
 
 	suffix=pkg.tar.zst
 
@@ -86,6 +89,8 @@ for pkg in $(jq -cr '.packages[].pkg' pkg_info.json); do
 			notify-send "cron job 'repo update' failed. Download of asset '$remote_asset_name' failed."
 			flag="false"
 		else
+			json=$(echo "$json" | jq --arg pkg "$pkg" --arg version "$remote_version" '.packages |= map(if (.pkg == $pkg) then .version = $version else . end)')
+			echo "$json" >pkg_info.json
 			repo-add "$arch_repo_db_path/$arch_repo_name.db.tar.gz" "$download_path/$remote_asset_name"
 		fi
 	fi
