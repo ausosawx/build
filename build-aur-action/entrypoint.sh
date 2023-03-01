@@ -19,7 +19,8 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 fi
 
 if [ -d "../$pkgname" ]; then
-	chmod -R a+rw ../"$pkgname"
+	sudo chown -R builder "../$pkgname"
+	sudo chown -R builder /github/home
 	cd ../"$pkgname" || exit
 	sudo --set-home -u builder paru -U --noconfirm
 else
