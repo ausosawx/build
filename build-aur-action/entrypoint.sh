@@ -20,7 +20,7 @@ fi
 
 if [ -d "../$pkgname" ]; then
 	sudo chown -R builder "../$pkgname"
-	sudo chown -R builder /github/home
+	sudo chown -R builder /github/workspace
 	cd ../"$pkgname" || exit
 	sudo --set-home -u builder paru -U --noconfirm
 else
