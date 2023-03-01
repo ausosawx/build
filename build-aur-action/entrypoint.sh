@@ -20,9 +20,9 @@ fi
 
 pkgbuild_dir=../pkgname
 if [ -d $pkgbuild_dir ]; then
+	cd $pkgbuild_dir || exit
+	chown -R builder .
 	# fix directory permissions
-	sudo chown -R build "$pkgbuild_dir"
-	sudo chown -R build /github/home
 	install_deps() {
 		# install the package dependencies
 		grep -E 'depends' .SRCINFO |
@@ -33,7 +33,6 @@ if [ -d $pkgbuild_dir ]; then
 			sed -e 's/.*depends = //' -e 's/:.*//' |
 			xargs paru -S --noconfirm
 	}
-	cd $pkgbuild_dir || exit
 	## check PKGBUILD
 	namcap PKGBUILD
 	# install dependencies
