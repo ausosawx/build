@@ -7,8 +7,8 @@ on:
 jobs:
   del_runs:
     runs-on: ubuntu-latest
-    permissions:
-      actions: write
+    permissions: write-all
+      # actions: write
     steps:
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
