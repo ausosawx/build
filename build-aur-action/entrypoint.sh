@@ -22,23 +22,7 @@ pkgbuild_dir=../$pkgname
 if [ -d "$pkgbuild_dir" ]; then
 	cd "$pkgbuild_dir" || exit
 	chown -R builder .
-	# fix directory permissions
-	install_deps() {
-		# install the package dependencies
-		sudo -H -u builder grep -E 'depends' .SRCINFO |
-			sed -e 's/.*depends = //' -e 's/:.*//' |
-			xargs paru -S --noconfirm
-		# install the package make dependencies
-		sudo -H -u builder grep -E 'makedepends' .SRCINFO |
-			sed -e 's/.*depends = //' -e 's/:.*//' |
-			xargs paru -S --noconfirm
-	}
-	## check PKGBUILD
-	namcap PKGBUILD
-	# install dependencies
-	install_deps
-	# just makepkg
-	sudo -H -u builder makepkg --syncdeps --noconfirm
+	sudo --set-home -u builder paru -U --noconfirm
 else
 	sudo --set-home -u builder paru -Sa --noconfirm --clonedir=./ "$pkgname"
 fi
