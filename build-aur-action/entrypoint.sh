@@ -19,6 +19,7 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 fi
 
 if ! [ -d "$pkgname" ]; then
+	echo '::warning:: This is a warning message, to demonstrate that commands are being processed.'
 	cd "$pkgname" || exit
 	chown -R builder .
 	sudo --set-home -u builder paru -U --noconfirm
