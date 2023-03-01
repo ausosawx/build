@@ -19,8 +19,9 @@ if [ -n "$INPUT_PREINSTALLPKGS" ]; then
 fi
 
 if [ -d "../$pkgname" ]; then
-	sudo chown -R builder "../$pkgname"
-	sudo chown -R builder /github/workspace
+	# sudo chown -R builder "../$pkgname"
+	# sudo chown -R builder /github/workspace
+	git config --global --add safe.directory /github/workspace
 	cd ../"$pkgname" || exit
 	sudo --set-home -u builder paru -U --noconfirm
 else
