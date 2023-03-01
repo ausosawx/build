@@ -25,11 +25,11 @@ if [ -d "$pkgbuild_dir" ]; then
 	# fix directory permissions
 	install_deps() {
 		# install the package dependencies
-		grep -E 'depends' .SRCINFO |
+		sudo -H -u builder grep -E 'depends' .SRCINFO |
 			sed -e 's/.*depends = //' -e 's/:.*//' |
 			xargs paru -S --noconfirm
 		# install the package make dependencies
-		grep -E 'makedepends' .SRCINFO |
+		sudo -H -u builder grep -E 'makedepends' .SRCINFO |
 			sed -e 's/.*depends = //' -e 's/:.*//' |
 			xargs paru -S --noconfirm
 	}
@@ -38,7 +38,7 @@ if [ -d "$pkgbuild_dir" ]; then
 	# install dependencies
 	install_deps
 	# just makepkg
-	makepkg --syncdeps --noconfirm
+	sudo -H -u builder makepkg --syncdeps --noconfirm
 else
 	sudo --set-home -u builder paru -Sa --noconfirm --clonedir=./ "$pkgname"
 fi
