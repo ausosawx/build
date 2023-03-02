@@ -3,7 +3,7 @@
     {
       "repo": "WayfireWM/wayfire",
       "pkg": "wayfire-git",
-      "sha": "341dca291516d4f9a94211d24641a7eed16a0f0d",
+      "sha": "4dd373d20a72c3406c6ebaca0a04d75570fa0ae8",
       "version": "0.7.5.r503.g341dca29-1"
     },
     {
@@ -15,13 +15,13 @@
     {
       "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
-      "sha": "76fc12869d186e59cf22d51e99e2909bf1828011",
+      "sha": "dea71875e40d5ff4ad649b3c04b02419b06da5df",
       "version": "r2530.76fc1286-1"
     },
     {
       "repo": "Alexays/Waybar",
       "pkg": "waybar-hyprland-git",
-      "sha": "f29a400c97d6cc339c5be2ca6c5467c04323b766",
+      "sha": "39bc54e3ade489ca96501a8fc1e034c0a7766061",
       "version": "0.9.17.r82.gf29a400c-1"
     }
   ]
