@@ -2,6 +2,9 @@
 
 cd "$(dirname "$0")" || exit 1
 
+git commit -am "update"
+git push
+
 # Check d-bus for notify-send
 userid=$(id -u)
 DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$userid/bus"
