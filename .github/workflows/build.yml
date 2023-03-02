@@ -1,6 +1,5 @@
 name: Del workflow runs->Monitor outdated pkgs->Update and release
 on:
-  push:
   workflow_dispatch:
   schedule:
     - cron: '0 6,17 * * *'
