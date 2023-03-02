@@ -9,19 +9,19 @@
     {
       "repo": "catchorg/catch2",
       "pkg": "catch2-git",
-      "sha": "3f0283de7a9c43200033da996ff9093be3ac84dc",
+      "sha": "69f35a5ac8ee4cb60dce7afe6978f10871baa718",
       "version": "3.3.2.r1.g69f35a5a-1"
     },
     {
       "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
-      "sha": "72f528cb52d13d88471963a06e08dd7cfa2efffa",
+      "sha": "76fc12869d186e59cf22d51e99e2909bf1828011",
       "version": "r2530.76fc1286-1"
     },
     {
       "repo": "Alexays/Waybar",
       "pkg": "waybar-hyprland-git",
-      "sha": "8cc882036927acc61a41545921c9bad3cc498c39",
+      "sha": "f29a400c97d6cc339c5be2ca6c5467c04323b766",
       "version": "0.9.17.r82.gf29a400c-1"
     }
   ]
