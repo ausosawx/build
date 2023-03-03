@@ -4,7 +4,7 @@
       "repo": "WayfireWM/wayfire",
       "pkg": "wayfire-git",
       "sha": "4dd373d20a72c3406c6ebaca0a04d75570fa0ae8",
-      "version": "0.7.5.r503.g341dca29-1"
+      "version": "0.7.5.r509.g4dd373d2-1"
     },
     {
       "repo": "catchorg/catch2",
@@ -16,13 +16,13 @@
       "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
       "sha": "dea71875e40d5ff4ad649b3c04b02419b06da5df",
-      "version": "r2530.76fc1286-1"
+      "version": "r2531.dea71875-1"
     },
     {
       "repo": "Alexays/Waybar",
       "pkg": "waybar-hyprland-git",
       "sha": "39bc54e3ade489ca96501a8fc1e034c0a7766061",
-      "version": "0.9.17.r82.gf29a400c-1"
+      "version": "0.9.17.r85.g39bc54e3-1"
     }
   ]
 }
