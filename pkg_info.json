@@ -15,13 +15,13 @@
     {
       "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
-      "sha": "dea71875e40d5ff4ad649b3c04b02419b06da5df",
+      "sha": "489ef7c51c7d33eeba6d6a66b6697f52441ddf45",
       "version": "r2531.dea71875-1"
     },
     {
       "repo": "Alexays/Waybar",
       "pkg": "waybar-hyprland-git",
-      "sha": "39bc54e3ade489ca96501a8fc1e034c0a7766061",
+      "sha": "b34d325a7114a0f84154d904a5c349b2006647f9",
       "version": "0.9.17.r85.g39bc54e3-1"
     }
   ]
