@@ -36,8 +36,6 @@ tele_send() {
 	python "$tele_send_py" "$1"
 }
 
-git pull
-
 # Check path
 download_path="$HOME/arch/RepoDB"
 arch_repo_db_path="$HOME/arch/RepoDB"
