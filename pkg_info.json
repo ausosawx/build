@@ -1,28 +1,24 @@
 {
   "packages": [
     {
-      "repo": "WayfireWM/wayfire",
       "pkg": "wayfire-git",
-      "sha": "4dd373d20a72c3406c6ebaca0a04d75570fa0ae8",
-      "version": "0.7.5.r509.g4dd373d2-1"
+      "version": ""
     },
     {
-      "repo": "catchorg/catch2",
       "pkg": "catch2-git",
-      "sha": "69f35a5ac8ee4cb60dce7afe6978f10871baa718",
-      "version": "3.3.2.r1.g69f35a5a-1"
+      "version": ""
     },
     {
-      "repo": "hyprwm/Hyprland",
       "pkg": "hyprland-git",
-      "sha": "5184b542b1f505c90f9ef4715ae949ac45b2b7ef",
-      "version": "r2557.5184b542-1"
+      "version": "r2557.5184"
     },
     {
-      "repo": "Alexays/Waybar",
       "pkg": "waybar-hyprland-git",
-      "sha": "b34d325a7114a0f84154d904a5c349b2006647f9",
-      "version": "0.9.17.r89.gb34d325a-1"
+      "version": "0.9.17.r89.1"
+    },
+    {
+      "pkg": "libdisplay-info-git",
+      "version": ""
     }
   ]
 }
