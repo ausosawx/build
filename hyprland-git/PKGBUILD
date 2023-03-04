@@ -9,6 +9,8 @@ arch=(any)
 url="https://github.com/hyprwm/Hyprland"
 license=('BSD')
 depends=(
+	libdisplay-info
+	libliftoff
 	libxcb
 	xcb-proto
 	xcb-util
@@ -54,22 +56,23 @@ sha256sums=('SKIP')
 options=(!makeflags !buildflags !strip)
 
 pkgver() {
-  cd "$_pkgname"
-  ( set -o pipefail
-    git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
-    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
-  )
+	cd "$_pkgname"
+	(
+		set -o pipefail
+		git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+			printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+	)
 }
 
 build() {
-    cd "${srcdir}/${_pkgname}"
-    git submodule update --init
-    make fixwlr
-    cd "./subprojects/wlroots/" && meson build/ --prefix="${srcdir}/tmpwlr" --buildtype=release && ninja -C build/ && mkdir -p "${srcdir}/tmpwlr" && ninja -C build/ install && cd ../
-    cd udis86 && cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -H./ -B./build -G Ninja && cmake --build ./build --config Release --target all -j$(shell nproc) && cd ../..
-    make protocols
-    make release
-    cd ./hyprctl && make all && cd ..
+	cd "${srcdir}/${_pkgname}"
+	git submodule update --init
+	make fixwlr
+	cd "./subprojects/wlroots/" && meson build/ --prefix="${srcdir}/tmpwlr" --buildtype=release && ninja -C build/ && mkdir -p "${srcdir}/tmpwlr" && ninja -C build/ install && cd ../
+	cd udis86 && cmake --no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -H./ -B./build -G Ninja && cmake --build ./build --config Release --target all -j$(shell nproc) && cd ../..
+	make protocols
+	make release
+	cd ./hyprctl && make all && cd ..
 }
 
 package() {
