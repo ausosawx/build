@@ -56,7 +56,7 @@ jobs:
     permissions:
       contents: write
     strategy:
-      matrix: ${{ fromJSON(needs.monitor.outputs.pkgs) }}
+      matrix: ${{ fromJSON(needs.checkout.outputs.pkgs) }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
