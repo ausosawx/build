@@ -2,23 +2,23 @@
   "packages": [
     {
       "pkg": "wayfire-git",
-      "version": ""
+      "version": "0.7.5.r509.g4dd373d2-1"
     },
     {
       "pkg": "catch2-git",
-      "version": ""
+      "version": "3.3.2.r1.g69f35a5a-1"
     },
     {
       "pkg": "hyprland-git",
-      "version": "r2557.5184"
+      "version": "r2557.5184b542-1"
     },
     {
       "pkg": "waybar-hyprland-git",
-      "version": "0.9.17.r89.1"
+      "version": "0.9.17.r89.gb34d325a-1"
     },
     {
       "pkg": "libdisplay-info-git",
-      "version": ""
+      "version": "0.1.1+10.g147d6611a6-1"
     }
   ]
 }
