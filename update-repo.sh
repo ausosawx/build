@@ -65,7 +65,7 @@ for package in $(echo "$packages" | jq -c '.[]'); do
 
 	suffix=pkg.tar.zst
 
-	remote_asset_name=$(echo "$assets_names" | grep -o "^$pkg.*$suffix")
+	remote_asset_name=$(echo "$assets_names" | grep -o "^$pkg-[0-9r].*$suffix")
 
 	if [ -z "$remote_asset_name" ]; then
 		echo -e "\033[31mError: no asset found for package '$pkg'.\033[0m"
