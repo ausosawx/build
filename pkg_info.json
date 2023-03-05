@@ -15,6 +15,14 @@
     {
       "pkg": "waybar-hyprland-git",
       "version": "0.9.17.r89.gb34d325a-1"
+    },
+    {
+      "pkg": "libdisplay-info-git",
+      "version": ""
+    },
+    {
+      "pkg": "libdisplay-info",
+      "version": ""
     }
   ]
 }
