@@ -6,11 +6,11 @@
     },
     {
       "pkg": "catch2-git",
-      "version": "3.3.2.r1.g69f35a5a-1"
+      "version": "3.3.2.r2.g0a0ebf50-1"
     },
     {
       "pkg": "hyprland-git",
-      "version": "r2557.5184b542-1"
+      "version": "r2566.7ce92f93-1"
     },
     {
       "pkg": "waybar-hyprland-git",
