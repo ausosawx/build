@@ -10,11 +10,11 @@
     },
     {
       "pkg": "hyprland-git",
-      "version": "r2571.b11e2eaa-1"
+      "version": "r2572.a85a6fa6-1"
     },
     {
       "pkg": "waybar-hyprland-git",
-      "version": "0.9.17.r89.gb34d325a-1"
+      "version": "0.9.17.r91.g823c13a8-1"
     }
   ]
 }
