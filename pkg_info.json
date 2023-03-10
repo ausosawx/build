@@ -6,15 +6,15 @@
     },
     {
       "pkg": "catch2-git",
-      "version": "3.3.2.r2.g0a0ebf50-1"
+      "version": "3.3.2.r3.g3220ae6d-1"
     },
     {
       "pkg": "hyprland-git",
-      "version": "r2572.a85a6fa6-1"
+      "version": "r2577.c9167d96-1"
     },
     {
       "pkg": "waybar-hyprland-git",
-      "version": "0.9.17.r91.g823c13a8-1"
+      "version": "0.9.17.r95.g9a0dbd55-1"
     }
   ]
 }
