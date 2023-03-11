@@ -1,0 +1,38 @@
+pkgname=clash-meta-alpha-git
+_pkgname=Clash.Meta
+pkgver=Prerelease.Alpha.r0.gae4d1148
+pkgrel=1
+pkgdesc="A rule-based tunnel in Go"
+arch=('x86_64')
+url="https://github.com/MetaCubeX/Clash.Meta"
+license=('GPL3')
+depends=('glibc')
+makedepends=('git' 'go')
+provides=('clash-meta')
+conflicts=('clash-meta')
+backup=("etc/clash-meta/config.yaml")
+source=("git+${url}.git#branch=Alpha"
+        "clash-meta.service"
+        "clash-meta@.service")
+sha256sums=('SKIP'
+            'fd3e935558b926af52e0d914affee56008320320ad35dddb83816a07611e5044'
+            'd56307ab9a12188987cd007fe2fe1b47324b75670281ea1c8b4c8bd428932dbb')
+
+pkgver() {
+    cd "${srcdir}"/"${_pkgname}"/
+    git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+    cd "${srcdir}"/"${_pkgname}"/
+    make linux-amd64
+}
+
+package() {
+    cd "${srcdir}"/"${_pkgname}"/
+    install -Dm 755 "bin/clash.meta-linux-amd64" "${pkgdir}/usr/bin/clash-meta"
+    install -Dm 644 "docs/config.yaml" -t "${pkgdir}/etc/clash-meta"
+	  cd ${srcdir}
+    install -Dm 644 "clash-meta.service" -t "${pkgdir}/usr/lib/systemd/system"
+    install -Dm 644 "clash-meta@.service" -t "${pkgdir}/usr/lib/systemd/system"
+}
