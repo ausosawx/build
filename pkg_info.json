@@ -2,23 +2,23 @@
   "packages": [
     {
       "pkg": "wayfire-git",
-      "version": "0.7.5.510.g90c370fa-1"
+      "version": "0.7.5.r510.g90c370fa-1"
     },
     {
       "pkg": "catch2-git",
-      "version": "3.3.2.3.g3220ae6d-1"
+      "version": "3.3.2.r3.g3220ae6d-1"
     },
     {
       "pkg": "hyprland-git",
-      "version": "r257.25328666-1"
+      "version": "r2579.25328666-1"
     },
     {
       "pkg": "waybar-hyprland-git",
-      "version": "0..17.r95.g9a0dbd55-1"
+      "version": "0.9.17.r95.g9a0dbd55-1"
     },
     {
       "pkg": "clash-meta-alpha-git",
-      "version": "0.6.0.r2102.gae4d1148-"
+      "version": "0.6.0.r2102.gae4d1148-1"
     }
   ]
 }
