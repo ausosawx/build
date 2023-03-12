@@ -6,11 +6,11 @@
     },
     {
       "pkg": "catch2-git",
-      "version": "3.3.2.r3.g3220ae6d-1"
+      "version": "3.3.2.r8.g9b884d81-1"
     },
     {
       "pkg": "hyprland-git",
-      "version": "r2579.25328666-1"
+      "version": "r2580.71ef1bde-1"
     },
     {
       "pkg": "waybar-hyprland-git",
@@ -18,7 +18,7 @@
     },
     {
       "pkg": "clash-meta-alpha-git",
-      "version": "0.6.0.r2102.gae4d1148-1"
+      "version": "0.6.0.r2104.g09b4a7ff-1"
     }
   ]
 }
