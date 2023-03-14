@@ -9,10 +9,6 @@
       "version": "3.3.2.r8.g9b884d81-1"
     },
     {
-      "pkg": "hyprland-git",
-      "version": "r2580.71ef1bde-1"
-    },
-    {
       "pkg": "waybar-hyprland-git",
       "version": "0.9.17.r95.g9a0dbd55-1"
     },
