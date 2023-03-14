@@ -6,11 +6,11 @@
     },
     {
       "pkg": "catch2-git",
-      "version": "3.3.2.r8.g9b884d81-1"
+      "version": "3.3.2.r12.g7b4dd326-1"
     },
     {
       "pkg": "waybar-hyprland-git",
-      "version": "0.9.17.r95.g9a0dbd55-1"
+      "version": "0.9.17.r99.g473eb098-1"
     },
     {
       "pkg": "tutanota-desktop",
@@ -18,7 +18,7 @@
     },
     {
       "pkg": "clash-meta-alpha-git",
-      "version": "0.6.0.r2111.g13111081-1"
+      "version": "0.6.0.r2116.g6ba82c6d-1"
     }
   ]
 }
